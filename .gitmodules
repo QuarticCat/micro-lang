@@ -1,0 +1,3 @@
+[submodule "deps/qc-parser-comb"]
+	path = deps/qc-parser-comb
+	url = https://github.com/QuarticCat/qc-parser-comb
