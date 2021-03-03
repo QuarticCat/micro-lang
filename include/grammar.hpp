@@ -2,47 +2,51 @@
 
 #include "qcpc/qcpc.hpp"
 
+namespace pc = qcpc;
+
+#define S(str) QCPC_STR(str)
+
 // clang-format off
 
 QCPC_DECL(expr);
 
-QCPC_DECL_DEF(sep)
-  = *one<' ', '\t', '\r', '\n'>
+QCPC_DECL_DEF_(sep)
+  = *pc::one<' ', '\t', '\r', '\n'>
   ;
 
 QCPC_DECL_DEF(integer)
-  = -one<'-'> & +range<'0', '9'>
+  = -S("-") & +pc::range<'0', '9'>
   ;
 QCPC_DECL_DEF(ident)
-  = range<'a', 'z', 'A', 'Z'> & *range<'a', 'z', 'A', 'Z', '0', '9'>
+  = pc::range<'a', 'z', 'A', 'Z'> & *pc::range<'a', 'z', 'A', 'Z', '0', '9'>
   ;
 QCPC_DECL_DEF_(primary)
-  = join(sep, one<'('>, expr, one<')'>)
+  = pc::join(sep, S("("), expr, S(")"))
   | ident
   | integer
   ;
 
 QCPC_DECL_DEF(add_op)
-  = one<'+', '-'>
+  = pc::one<'+', '-'>
   ;
 QCPC_DEF(expr)
-  = list(primary, add_op, sep)
+  = pc::list(primary, add_op, sep)
   ;
 QCPC_DECL_DEF_(expr_list)
-  = list(expr, one<','>, sep)
+  = pc::list(expr, S(","), sep)
   ;
 QCPC_DECL_DEF_(id_list)
-  = list(ident, one<','>, sep)
+  = pc::list(ident, S(","), sep)
   ;
 
 QCPC_DECL_DEF(assign_stmt)
-  = join(sep, ident, str<':', '='>, expr, one<';'>)
+  = pc::join(sep, ident, S(":="), expr, S(";"))
   ;
 QCPC_DECL_DEF(read_stmt)
-  = join(sep, str<'r', 'e', 'a', 'd'>, one<'('>, id_list, one<')'>, one<';'>)
+  = pc::join(sep, S("read"), S("("), id_list, S(")"), S(";"))
   ;
 QCPC_DECL_DEF(write_stmt)
-  = join(sep, str<'w', 'r', 'i', 't', 'e'>, one<'('>, expr_list, one<')'>, one<';'>)
+  = pc::join(sep, S("write"), S("("), expr_list, S(")"), S(";"))
   ;
 QCPC_DECL_DEF_(stmt)
   = assign_stmt
@@ -50,8 +54,10 @@ QCPC_DECL_DEF_(stmt)
   | write_stmt
   ;
 
-QCPC_DECL_DEF_(program)
-  = boi & join(sep, str<'b', 'e', 'g', 'i', 'n'>, +stmt, str<'e', 'n', 'd'>) & soi
+QCPC_DECL_DEF(program)
+  = pc::join(sep, pc::boi, S("begin"), *stmt, S("end"), pc::eoi)
   ;
 
 // clang-format on
+
+#undef S
