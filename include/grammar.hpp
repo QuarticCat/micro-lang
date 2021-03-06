@@ -15,7 +15,7 @@ QCPC_DECL_DEF_(sep)
   ;
 
 QCPC_DECL_DEF(integer)
-  = -S("-") & +pc::range<'0', '9'>
+  = -pc::one<'-', '+'> & +pc::range<'0', '9'>
   ;
 QCPC_DECL_DEF(ident)
   = pc::range<'a', 'z', 'A', 'Z'> & *pc::range<'a', 'z', 'A', 'Z', '0', '9'>
@@ -55,7 +55,7 @@ QCPC_DECL_DEF_(stmt)
   ;
 
 QCPC_DECL_DEF(program)
-  = pc::join(sep, pc::boi, S("begin"), *stmt, S("end"), pc::eoi)
+  = pc::join(sep, pc::boi, S("begin"), pc::list(stmt, sep), S("end"), pc::eoi)
   ;
 
 // clang-format on
