@@ -6,6 +6,8 @@
 
 #include "grammar.hpp"
 
+namespace detail {
+
 #define CASE(rule)                                                              \
     case rule.tag:                                                              \
         std::cout << #rule;                                                     \
@@ -43,3 +45,12 @@ void print_tree(pc::Token& token, size_t indent = 0, bool newline = true) {
 }
 
 #undef CASE
+
+}  // namespace detail
+
+template<size_t Step = 2>
+void print_tree_debug([[maybe_unused]] pc::Token& token) {
+#ifndef NDEBUG
+    detail::print_tree<Step>(token);
+#endif
+}
