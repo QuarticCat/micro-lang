@@ -3,10 +3,9 @@
 #include <cstdio>
 #include <memory>
 
-namespace mips {
+namespace detail {
 
-inline constexpr const char prelude[] = R"#####(
-# Module : main
+inline constexpr const char prelude[] = R"#####(# Module : main
 	.extern scanf
 	.extern printf
 # data sections of function __micro_read
@@ -162,8 +161,28 @@ inline Chars writei(int src) {
                   src);
 }
 
+/// Generate mips assembly for `mem = mem` cases.
+inline Chars move(int lhs_offset, int rhs_offset) {
+    return format(R"#####(
+	lw $t0, %d($s8)
+	sw $t0, %d($s8)
+)#####",
+                  rhs_offset,
+                  lhs_offset);
+}
+
+/// Generate mips assembly for `mem = imm` cases.
+inline Chars movei(int lhs_offset, int rhs) {
+    return format(R"#####(
+	li $t0, %d
+	sw $t0, %d($s8)
+)#####",
+                  rhs,
+                  lhs_offset);
+}
+
 /// Generate mips assembly for `mem + mem` cases.
-inline Chars add(int lhs_offset, int rhs_offset) {
+inline Chars add(int lhs_offset, int rhs_offset, int dst_offset) {
     return format(R"#####(
 	lw $t0, %d($s8)
 	lw $t1, %d($s8)
@@ -172,11 +191,11 @@ inline Chars add(int lhs_offset, int rhs_offset) {
 )#####",
                   lhs_offset,
                   rhs_offset,
-                  lhs_offset);
+                  dst_offset);
 }
 
 /// Generate mips assembly for `mem + imm` / `imm + mem` / `mem - imm` cases.
-inline Chars addi(int lhs_offset, int rhs) {
+inline Chars addi(int lhs_offset, int rhs, int dst_offset) {
     return format(R"#####(
 	lw $t0, %d($s8)
 	addi $t0, $t0, %d
@@ -184,11 +203,11 @@ inline Chars addi(int lhs_offset, int rhs) {
 )#####",
                   lhs_offset,
                   rhs,
-                  lhs_offset);
+                  dst_offset);
 }
 
 /// Generate mips assembly for `mem - mem` cases.
-inline Chars sub(int lhs_offset, int rhs_offset) {
+inline Chars sub(int lhs_offset, int rhs_offset, int dst_offset) {
     return format(R"#####(
 	lw $t0, %d($s8)
 	lw $t1, %d($s8)
@@ -197,11 +216,11 @@ inline Chars sub(int lhs_offset, int rhs_offset) {
 )#####",
                   lhs_offset,
                   rhs_offset,
-                  lhs_offset);
+                  dst_offset);
 }
 
 /// Generate mips assembly for `imm - mem` cases.
-inline Chars isub(int lhs, int rhs_offset) {
+inline Chars isub(int lhs, int rhs_offset, int dst_offset) {
     return format(R"#####(
 	li $t0, %d
 	lw $t1, %d($s8)
@@ -210,7 +229,7 @@ inline Chars isub(int lhs, int rhs_offset) {
 )#####",
                   lhs,
                   rhs_offset,
-                  rhs_offset);
+                  dst_offset);
 }
 
-}  // namespace mips
+}  // namespace detail

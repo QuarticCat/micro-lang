@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <iostream>
+#include <stdexcept>
 
 #include "grammar.hpp"
 
@@ -22,6 +23,7 @@ namespace detail {
         }                                                                       \
         break
 
+/// Pest-style AST printing.
 template<size_t Step = 2>
 void print_tree(pc::Token& token, size_t indent = 0, bool newline = true) {
     if (newline) {
@@ -39,8 +41,7 @@ void print_tree(pc::Token& token, size_t indent = 0, bool newline = true) {
         CASE(integer);
         CASE(add_op);
     default:
-        std::cout << "ERROR!\n";
-        break;
+        throw std::domain_error("Unknown tag!");
     }
 }
 
@@ -48,6 +49,7 @@ void print_tree(pc::Token& token, size_t indent = 0, bool newline = true) {
 
 }  // namespace detail
 
+/// A wrapper of `detail::print_tree` that only take effects on DEBUG mode.
 template<size_t Step = 2>
 void print_tree_debug([[maybe_unused]] pc::Token& token) {
 #ifndef NDEBUG

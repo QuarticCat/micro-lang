@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 #include "codegen.hpp"
@@ -19,10 +20,13 @@ std::string read_file(const char* filename) {
 }
 
 int main() {
-    // pc::StringInput in(read_file("./examples/middle-expression.m"));
+    pc::StringInput in(read_file("./examples/middle-expression.m"));
     // pc::StringInput in(read_file("./examples/simple-a-plus-b.m"));
     // pc::StringInput in(read_file("./examples/simple-variable.m"));
-    pc::StringInput in(read_file("./examples/various-space-and-tabs.m"));
+    // pc::StringInput in(read_file("./examples/various-space-and-tabs.m"));
     auto ret = pc::parse(program, in);
+    if (!ret) throw std::logic_error("Parse Error");
     print_tree_debug(*ret);
+    auto code = codegen(*ret);
+    std::cout << code;
 }
