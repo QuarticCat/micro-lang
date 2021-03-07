@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 
+#include "codegen.hpp"
 #include "debug.hpp"
 #include "grammar.hpp"
 
