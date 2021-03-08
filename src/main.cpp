@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 #include <stdexcept>
 #include <string>
 
@@ -23,15 +22,19 @@ std::string preprocess(std::istream& is) {
     return ret;
 }
 
-int main() {
-    // std::ifstream ifs("./examples/middle-expression.m");
-    // std::ifstream ifs("./examples/simple-a-plus-b.m");
-    // std::ifstream ifs("./examples/simple-variable.m");
-    std::ifstream ifs("./examples/various-space-and-tabs.m");
+int main(int argc, char* argv[]) {
+    if (argc != 3) throw std::invalid_argument("Wrong argument number!");
+
+    std::ifstream ifs(argv[1]);
+    if (ifs.fail()) throw std::invalid_argument("Unable to open input file!");
+
     pc::StringInput in(preprocess(ifs));
     auto ret = pc::parse(program, in);
-    if (!ret) throw std::logic_error("Parse Error");
+    if (!ret) throw std::logic_error("Parse error!");
     print_tree_debug(*ret);
     auto code = codegen(*ret);
-    std::cout << code;
+
+    std::ofstream ofs(argv[2]);
+    if (ofs.fail()) throw std::invalid_argument("Unable to open output file!");
+    ofs << code;
 }
