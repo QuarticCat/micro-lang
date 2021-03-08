@@ -13,6 +13,6 @@ target_compile_features(micro_lang PRIVATE cxx_std_20)
 if (MSVC)
     target_compile_options(micro_lang PRIVATE /W4)
 else ()
-    target_compile_options(micro_lang PRIVATE -Wall -Wextra -pedantic)
+    target_compile_options(micro_lang PRIVATE -Wall -Wextra -pedantic -Wno-format-security)
 endif ()
 
