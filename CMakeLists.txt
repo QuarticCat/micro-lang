@@ -15,4 +15,3 @@ if (MSVC)
 else ()
     target_compile_options(micro_lang PRIVATE -Wall -Wextra -pedantic -Wno-format-security)
 endif ()
-
