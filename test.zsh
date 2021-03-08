@@ -6,6 +6,7 @@ testDir="./tests"
 
 mkdir -p $buildDir $outputDir
 (cd $buildDir && cmake .. -DCMAKE_BUILD_TYPE=Release && make)
+echo
 
 for file in ./examples/*; do
     name="${$(basename "$file")%.*}"
@@ -14,9 +15,9 @@ for file in ./examples/*; do
     "$mipselDir/bin/mipsel-linux-musl-cc" -static "$outputDir/$name.S" -o "$outputDir/$name"
     output="$(qemu-mipsel "$outputDir/$name" < "$testDir/$name.in")"
     if [[ $output == $(<"$testDir/$name.out") ]]; then
-        echo "Success!"
+        echo "... Success!"
     else
-        echo "Fail!"
+        echo "... Fail!"
     fi
     echo
 done
