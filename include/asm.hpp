@@ -98,7 +98,7 @@ Chars format(const char* format, Args... args) {
 }
 
 /// Generate MIPS assembly for the prologue of the main function.
-inline Chars main_prologue(int stack_size) {
+inline Chars main_prologue(int32_t stack_size) {
     return format(R"#####(
 	.text
 	.globl main
@@ -120,7 +120,7 @@ main:
 }
 
 /// Generate MIPS assembly for the epilogue of the main function.
-inline Chars main_epilogue(int stack_size) {
+inline Chars main_epilogue(int32_t stack_size) {
     return format(R"#####(
 	# epilogue area
 	move $sp, $s8
