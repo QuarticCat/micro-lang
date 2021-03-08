@@ -1,8 +1,8 @@
 		
   
 		
-begin	
-		read(a		);
+begin	--123
+		read(a		); -- );
 		read(	b,c,d); write(a);
 a:=1;
 d:=2;

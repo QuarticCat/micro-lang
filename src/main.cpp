@@ -7,23 +7,28 @@
 #include "debug.hpp"
 #include "grammar.hpp"
 
-std::string read_file(const char* filename) {
-    std::ifstream ifs(filename);
+/// Remove comments from istream and return processed string.
+std::string preprocess(std::istream& is) {
     std::string ret;
-
-    ifs.seekg(0, std::ios::end);
-    ret.reserve(ifs.tellg());
-    ifs.seekg(0, std::ios::beg);
-
-    ret.assign(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+    std::string line;
+    while (std::getline(is, line)) {
+        for (size_t i = 0; i < line.size(); ++i) {
+            if (line[i] == '-' && line[i + 1] == '-') {
+                line[i] = '\0';
+                break;
+            }
+        }
+        (ret += line.data()) += '\n';
+    }
     return ret;
 }
 
 int main() {
-    pc::StringInput in(read_file("./examples/middle-expression.m"));
-    // pc::StringInput in(read_file("./examples/simple-a-plus-b.m"));
-    // pc::StringInput in(read_file("./examples/simple-variable.m"));
-    // pc::StringInput in(read_file("./examples/various-space-and-tabs.m"));
+    // std::ifstream ifs("./examples/middle-expression.m");
+    // std::ifstream ifs("./examples/simple-a-plus-b.m");
+    // std::ifstream ifs("./examples/simple-variable.m");
+    std::ifstream ifs("./examples/various-space-and-tabs.m");
+    pc::StringInput in(preprocess(ifs));
     auto ret = pc::parse(program, in);
     if (!ret) throw std::logic_error("Parse Error");
     print_tree_debug(*ret);
