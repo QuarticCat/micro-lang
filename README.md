@@ -1,6 +1,6 @@
 # Micro Lang
 
-A compiler of a super simple toy language written with
+A toy language compiler written with
 [qc-parser-comb](https://github.com/QuarticCat/qc-parser-comb).
 
 It generates valid MIPS code that can be compiled by MUSL-GCC and run on QEMU.
